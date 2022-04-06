@@ -13,7 +13,7 @@ data = BeautifulSoup(page,'html.parser')
 
 # récupération des données avec la fonction Find
 
-# product_page_url= data.find("h1", {"class": "ico-after ico-tutorials"})
+#product_page_url= data.find("Link")
 
 universal_product_code = data.find("td")
 print("1",universal_product_code.string)
@@ -30,8 +30,8 @@ print("4", price_excluding_tax)
 number_available = data.find("p", {"class": "instock availability"})
 print("5",number_available)
 
-#product_description = data.find("meta", {"class": "content"})
-#print("6",product_description)
+product_description = data.find("meta", {"class": "content"})
+print("6",product_description)
 
 category= data.find("tr", {"class": "table table-striped"})
 print("7",category)
@@ -42,3 +42,19 @@ print("8",review_rating)
 image_url = data.find("div", {"class": "col-sm-6"})
 print("9",image_url)
 
+en_tete= ["product_page_url", "universal_product_code","title","price_including_tax","price_excluding_tax","number_available","product_description","category,review_rating,image_url"]
+with open('data.csv','w') as csv_file:
+    writer= csv.writer(csv_file, delimiter=',')
+    writer.writerow(en_tete)
+    # Créer une liste pour les en-têtes
+    en_tete = ["titre", "description"]
+
+    # Créer un nouveau fichier pour écrire dans le fichier appelé « data.csv »
+    with open('data.csv', 'w') as fichier_csv:
+        # Créer un objet writer (écriture) avec ce fichier
+        writer = csv.writer(fichier_csv, delimiter=',')
+        writer.writerow(en_tete)
+
+        for universal_product_code,title,price_including_tax,price_excluding_tax,number_available,product_description,category,review_rating,image_url in zip(universal_product_code,title,price_including_tax,price_excluding_tax,number_available,product_description,category,review_rating,image_url):
+            ligne = [titre, description]
+            writer.writerow(ligne)

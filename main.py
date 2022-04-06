@@ -1,9 +1,10 @@
 # importer les packages
 import pandas as pd
 import csv
-import os
-import requests
+Import requests
 from bs4 import BeautifulSoup
+
+
 # Atribuer l'URL de la pge WEB et récupérer son contenu dans la variable Page
 url = requests.get("http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html")
 page = url.content
@@ -41,20 +42,18 @@ print("8",review_rating)
 
 image_url = data.find("div", {"class": "col-sm-6"})
 print("9",image_url)
-
-en_tete= ["product_page_url", "universal_product_code","title","price_including_tax","price_excluding_tax","number_available","product_description","category,review_rating,image_url"]
+# Créer une liste pour les en-têtes
+en_tete= [<"code_produit","titre","prix_avec_tax","prix_sans_tax","nombre_disponible","description_produit","categorie>,"note","url_image"]
 with open('data.csv','w') as csv_file:
     writer= csv.writer(csv_file, delimiter=',')
     writer.writerow(en_tete)
-    # Créer une liste pour les en-têtes
-    en_tete = ["titre", "description"]
 
-    # Créer un nouveau fichier pour écrire dans le fichier appelé « data.csv »
-    with open('data.csv', 'w') as fichier_csv:
-        # Créer un objet writer (écriture) avec ce fichier
-        writer = csv.writer(fichier_csv, delimiter=',')
-        writer.writerow(en_tete)
+# Créer un nouveau fichier pour écrire dans le fichier appelé « data.csv »
+with open('data.csv', 'w') as fichier_csv:
+    # Créer un objet writer (écriture) avec ce fichier
+    writer = csv.writer(fichier_csv, delimiter=',')
+    writer.writerow(en_tete)
 
-        for universal_product_code,title,price_including_tax,price_excluding_tax,number_available,product_description,category,review_rating,image_url in zip(universal_product_code,title,price_including_tax,price_excluding_tax,number_available,product_description,category,review_rating,image_url):
-            ligne = [titre, description]
-            writer.writerow(ligne)
+    for code_produit,titre,prix_avec_tax,prix_sans_tax,nombre_disponible,description_produit,categorie>,note,url_image in zip(code_produit,titre,prix_avec_tax,prix_sans_tax,nombre_disponible,description_produit,categorie>,note,url_image):
+        ligne = [code_produit,titre,prix_avec_tax,prix_sans_tax,nombre_disponible,description_produit,categorie>,note,url_image]
+        writer.writerow(ligne)

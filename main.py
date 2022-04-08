@@ -1,7 +1,7 @@
 # importer les packages
 import pandas as pd
 import csv
-Import requests
+import requests
 from bs4 import BeautifulSoup
 
 
@@ -22,17 +22,36 @@ print("1",universal_product_code.string)
 title = data.find("title")
 print("2",title.string)
 
-price_including_tax =data.find("table",{"class": "table table-striped"})
-print("3",price_including_tax)
+price_including_tax_Table = data.find("table",{"class": "table table-striped"})
+price_including_tax= price_including_tax_Table.find_all("tr")
+headings1 = []
+for td in price_including_tax[2].find("td"):
+    # supprimer les lignes et les espaces en trop
+    headings1.append(td.text.replace('\n', ' ').strip())
+    print("3", headings1)
 
-price_excluding_tax = data.find("th", {"class": "table table-striped"})
-print("4", price_excluding_tax)
+price_excluding_tax_Table = data.find("table", {"class": "table table-striped"})
+price_excluding_tax= price_excluding_tax_Table.find_all("tr")
+headings2 = []
+for td in price_excluding_tax[3].find("td"):
+    headings2.append(td.text.replace('\n', ' ').strip())
+    print("4", headings2)
 
 number_available = data.find("p", {"class": "instock availability"})
-print("5",number_available)
+price_including_tax= price_including_tax_Table.find_all("tr")
+headings3 = []
+for td in price_including_tax[5].find("td"):
+    headings3.append(td.text.replace('\n', ' ').strip())
+    print("5", headings3)
 
-product_description = data.find("meta", {"class": "content"})
-print("6",product_description)
+
+product_description_table = data.find("article", {"class": "product_page"})
+product_description = product_description_table.find("p")
+headings4 = []
+for p in product_description[3].find("p"):
+    headings4.append(p.text.replace('\n', ' ').strip())
+    print("6", headings4)
+#print("6",product_description)
 
 category= data.find("tr", {"class": "table table-striped"})
 print("7",category)
@@ -42,18 +61,5 @@ print("8",review_rating)
 
 image_url = data.find("div", {"class": "col-sm-6"})
 print("9",image_url)
-# Créer une liste pour les en-têtes
-en_tete= [<"code_produit","titre","prix_avec_tax","prix_sans_tax","nombre_disponible","description_produit","categorie>,"note","url_image"]
-with open('data.csv','w') as csv_file:
-    writer= csv.writer(csv_file, delimiter=',')
-    writer.writerow(en_tete)
 
-# Créer un nouveau fichier pour écrire dans le fichier appelé « data.csv »
-with open('data.csv', 'w') as fichier_csv:
-    # Créer un objet writer (écriture) avec ce fichier
-    writer = csv.writer(fichier_csv, delimiter=',')
-    writer.writerow(en_tete)
 
-    for code_produit,titre,prix_avec_tax,prix_sans_tax,nombre_disponible,description_produit,categorie>,note,url_image in zip(code_produit,titre,prix_avec_tax,prix_sans_tax,nombre_disponible,description_produit,categorie>,note,url_image):
-        ligne = [code_produit,titre,prix_avec_tax,prix_sans_tax,nombre_disponible,description_produit,categorie>,note,url_image]
-        writer.writerow(ligne)

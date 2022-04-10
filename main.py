@@ -1,24 +1,30 @@
 # importer les packages
-import pandas as pd
+# import pandas as pd
 import csv
 import requests
 from bs4 import BeautifulSoup
-#from selenium import webdriver
+from selenium import webdriver
 
 
 # Atribuer l'URL de la pge WEB et récupérer son contenu dans la variable Page
 url = requests.get("http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html")
 page = url.content
 
+
 # fournir ce contenu à BeautifulSoup pour parcer via la variable data
 data = BeautifulSoup(page,'html.parser')
 
+
+# récupération du lien de la page
+
+#driver = webdriver.Chrome()
+# ouvrir l'URL
+#driver.get("http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html")
+#url_page = driver.current_url
+url_page="http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html"
+print("0", url_page)
+
 # récupération des données avec la fonction Find
-
-#product_page_url= data.find("Link")
-
-url_page = "http://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html"
-print ("0",url_page)
 
 universal_product_code = data.find("td")
 print("1",universal_product_code.string)
@@ -72,7 +78,7 @@ review_rating=4
 print("8",review_rating)
 
 #image_url = data.find("div", {"class": "col-sm-6"})
-image_url=url_page
+image_url= url_page
 print("9",image_url)
 
 
@@ -106,6 +112,9 @@ with open('data.csv', 'w') as fichier_csv:
     writer.writerow(ligne)
 
 url_category = requests.get("http://books.toscrape.com/catalogue/category/books/travel_2/index.html")
-page = url_category.content
 page1 = url_category.content
 data1 = BeautifulSoup(page1,'html.parser')
+
+urls = []
+for link in data1.find_all('a'):
+    print(link.get('href'))

@@ -219,8 +219,8 @@ with open('test.csv', 'w') as fichier_csv:
     # Créer un objet writer (écriture) avec ce fichier
     writer = csv.writer(fichier_csv, delimiter=';')
     writer.writerow(en_tete)
-
-    ligne = [url_page,
+    for i in ligne:
+        ligne = [url_page,
                  universal_product_code,
                  title,
                  price_including_tax,
@@ -230,21 +230,22 @@ with open('test.csv', 'w') as fichier_csv:
                  category,
                  review_rating,
                  image_url]
-    writer.writerow(ligne)
+
+        writer.writerow(i)
 
 # enregister l'ensemble dans un seul fichier CSV
 #df = pd.DataFrame(
-#    all_data,
+#    ligne,
 #    columns=["url_page",
-#            "universal_product_code",
-#            "title",
-#            "price_including_tax",
-#            "price_excluding_tax",
+#           "universal_product_code",
+#           "title",
+#           "price_including_tax",
+#          "price_excluding_tax",
 #           "number_available",
-#            "product_description",
-#            "category",
-#            "review_rating",
-#            "image_url"],
+#          "Dproduct_description",
+#           "category",
+#           "review_rating",
+#           "image_url"]
 #)
 #print(df)
-#df.to_csv("test.csv", index=None)
+#df.to_csv("data.csv", index=None)

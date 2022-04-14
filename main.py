@@ -149,14 +149,14 @@ with open('data.csv', 'w') as fichier_csv:
 
 
 url_list = []
-#page_link_global_class = data1.find("ol", {"class": "row"})
 
+for lk in data1.find_all("li", class_= "col-xs-6 col-sm-4 col-md-3 col-lg-3"):
+    for i in lk.find ("div", {"class": "image_container"}).find_all("a"):
+        url_list.append(i["href"])
 
-for lk in data1.find("ol", class_= "row").find_all("a"):
-    url_list.append(lk["href"])
 for url in url_list:
         url = urljoin(url2, url)
-        #print("liste urls", url)
+        print("liste urls", url)
 
         req_data = requests.get(url)
         data1 = BeautifulSoup(req_data.text, "html.parser")
@@ -228,7 +228,6 @@ for url in url_list:
 
 # enregister l'ensemble dans un seul fichier CSV
 
-
         ligne = [url_page,
          universal_product_code,
          title,
@@ -243,44 +242,12 @@ for url in url_list:
         ligne_data.append(ligne)
 
         with open('data.csv', 'a', encoding="utf-8") as fichier_csv:
-            writer = csv.writer(fichier_csv, delimiter=';')
+            writer = csv.writer(fichier_csv, delimiter=';', lineterminator='\n')
 
             for i in ligne_data:
                 writer.writerow(i)
-                fichier_csv.write(("\n"))
+                #fichier_csv.write(("\n"))
 
 
 
 
-
-"""------------------------------------------------------------
-
-ligne = [url_page,
-         universal_product_code,
-         title,
-         price_including_tax,
-         price_excluding_tax,
-         number_available,
-         product_description,
-         category,
-         review_rating,
-         image_url]
-ligne_data=[]
-ligne_data.append(ligne)
-
-df = pd.DataFrame(
-    ligne_data,
-    columns=["url_page",
-           "universal_product_code",
-           "title",
-           "price_including_tax",
-          "price_excluding_tax",
-           "number_available",
-          "Dproduct_description",
-           "category",
-           "review_rating",
-           "image_url"]
-)
-print(df)
-df.to_csv("data.csv", index=None)
-"""

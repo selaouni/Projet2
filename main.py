@@ -5,8 +5,9 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from urllib.parse import urljoin
-
-
+#python request remove warning
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 ###----------------------------------------------------PARTIE1---------------------------------------------------------
 """
 # Atribuer l'URL de la pge WEB et récupérer son contenu dans la variable Page
@@ -119,8 +120,8 @@ with open('data.csv', 'w') as fichier_csv:
 """
 ###----------------------------------------------------PARTIE2---------------------------------------------------------
 
-url2 = "http://books.toscrape.com/catalogue/category/books/travel_2/index.html"
-url_category = requests.get(url2)
+url2 = "https://books.toscrape.com/catalogue/category/books/childrens_11/index.html"
+url_category = requests.get(url2,verify=False)
 #page1 = url_category.content
 data1 = BeautifulSoup(url_category.text,'html.parser')
 
@@ -136,7 +137,7 @@ en_tete = ["url_page",
         "image_url"]
 
 with open('data.csv', 'w') as fichier_csv:
-    writer = csv.writer(fichier_csv, delimiter=';')
+    writer = csv.writer(fichier_csv, delimiter=';', lineterminator='\n')
     writer.writerow(en_tete)
 
 
@@ -156,7 +157,7 @@ for lk in data1.find_all("li", class_= "col-xs-6 col-sm-4 col-md-3 col-lg-3"):
 
 for url in url_list:
         url = urljoin(url2, url)
-        print("liste urls", url)
+        #print("liste urls", url)
 
         req_data = requests.get(url)
         data1 = BeautifulSoup(req_data.text, "html.parser")
@@ -168,15 +169,15 @@ for url in url_list:
 
 
         url_page = url
-        print("0",url_page)
+        #print("0",url_page)
     # ---------------------------------------
         universal_product_code_data = data1.find("td")
         universal_product_code = universal_product_code_data.string
-        print("1", universal_product_code.string)
+        #print("1", universal_product_code)
     # ----------------------------------------
         title_data = data1.find("title")
         title = title_data.string
-        print("2", title)
+        #print("2", title)
     # ---------------------------------------
         price_including_tax_Table = data1.find("table", {"class": "table table-striped"})
         price_including_tax_data = price_including_tax_Table.find_all("tr")
@@ -184,46 +185,45 @@ for url in url_list:
         for td in price_including_tax_data[2].find("td"):
         # supprimer les lignes et les espaces en trop
             price_including_tax.append(td.text.replace('\n', ' ').strip())
-            print("3", price_including_tax)
+            #print("3", price_including_tax)
     # --------------------------------
         price_excluding_tax_Table = data1.find("table", {"class": "table table-striped"})
         price_excluding_tax_data = price_excluding_tax_Table.find_all("tr")
         price_excluding_tax = []
         for td in price_excluding_tax_data[3].find("td"):
             price_excluding_tax.append(td.text.replace('\n', ' ').strip())
-            print("4", price_excluding_tax)
+            #print("4", price_excluding_tax)
     # ----------------------------------
         number_available_table = data1.find("table", {"class": "table table-striped"})
         number_available_data = number_available_table.find_all("tr")
         number_available = []
         for td in number_available_data[5].find("td"):
             number_available.append(td.text.replace('\n', ' ').strip())
-            print("5", number_available)
+            #print("5", number_available)
 
     # ----------------------------------
         product_description = data1.find("meta", {"name": "description"})['content']
-        print("6", product_description)
+        #print("6", product_description)
     # ----------------------------------
-        category_table = data1.find("table", {"class": "table table-striped"})
-        category_data = category_table.find_all("tr")
+        category_table = data1.find("ul", {"class": "breadcrumb"})
+        category_data = category_table.find_all("li")
         category = []
-        for td in category_data[1].find("td"):
+        for td in category_data[2].find("a"):
             category.append(td.text.replace('\n', ' ').strip())
-            print("7", category)
+            #print("7", category)
     # -----------------------------------
         review_rating_table = data1.find("table", {"class": "table table-striped"})
-        review_rating_data = category_table.find_all("tr")
+        review_rating_data = review_rating_table("tr")
         review_rating = []
         for td in review_rating_data[6].find("td"):
             review_rating.append(td.text.replace('\n', ' ').strip())
-            print("7", review_rating)
+            #print("7", review_rating)
     # ----------------------------------
-    # image_url = data.find("div", {"class": "col-sm-6"})
         image = data1.find("div", {"class": "item active"})
         for i in image.find_all("img"):
             url_brut = i.get('src')
             image_url = urljoin(url, url_brut)
-            print("9", image_url)
+            #print("9", image_url)
     # ----------------------------------
 
 # enregister l'ensemble dans un seul fichier CSV
@@ -246,8 +246,31 @@ for url in url_list:
 
             for i in ligne_data:
                 writer.writerow(i)
-                #fichier_csv.write(("\n"))
 
 
 
+###----------------------------------------------------PARTIE3---------------------------------------------------------
 
+url_page = "https://books.toscrape.com/index.html"
+get_url_page = requests.get(url_page,verify = False)
+page_content = get_url_page.content
+data1 = BeautifulSoup(page_content ,'html.parser')
+
+category_url_list=[]
+
+
+for lk in data1.find_all("ul", class_= "nav nav-list"):
+    for i in lk.find ("ul").find_all("a"):
+        category_url_list.append(i["href"])
+    print(category_url_list)
+
+
+"""
+for i in lk.find("li").find("a"):
+
+category_table = data1.find("ul", {"class": "nav nav-list"})
+category_data = category_table.find_all("li")
+category = []
+for td in category_data[2].find("a"):
+        category.append(td.text.replace('\n', ' ').strip())
+        #print("7", category)"""

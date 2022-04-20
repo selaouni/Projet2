@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from requests.packages.urllib3.exceptions import InsecureRequestWarning # disable warning
-import os.path
+import os.path # pour l'ecriture dans les fichiers
 import urllib.request #pour le téléchargement des images
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -124,10 +124,9 @@ while True:
 ###----------------------------------------------------PARTIE3---------------------------------------------------------
 
 url_site = "https://books.toscrape.com/index.html"
-get_url_page = requests.get(url_site,verify = False)
+get_url_page = requests.get(url_site,verify = False) # récupération des données du site
 page_content = get_url_page.content
-#récupérataion du contenu de la page
-data1 = BeautifulSoup(page_content ,'html.parser')
+data1 = BeautifulSoup(page_content ,'html.parser') # #récupérataion du contenu de la page
 
 #récupération de tous les liens de toutes les catégories
 category_list = []
@@ -233,7 +232,7 @@ for lk in data1.find_all("ul", class_= "nav nav-list"):
                 print("9", image_url)
                 image_name_all = i.get('alt')
                 image_name = image_name_all[1:10]
-                urllib.request.urlretrieve(image_url, str(image_name) + ".jpg") # Sauvegarde des images de chaque catégorie de livre
+            urllib.request.urlretrieve(image_url, str(image_name) + ".jpg") # Sauvegarde des images de chaque catégorie de livre
 
     # ----------------------------------
     # enregister l'ensemble dans un seul fichier CSV

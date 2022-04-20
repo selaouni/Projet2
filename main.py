@@ -1,5 +1,4 @@
 # importer les packages
-import pandas as pd
 import csv
 import requests
 from bs4 import BeautifulSoup
@@ -11,7 +10,6 @@ import urllib.request #pour le téléchargement des images
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 ###----------------------------------------------------PARTIE2---------------------------------------------------------
-
 """
 url2 = "https://books.toscrape.com/catalogue/category/books/childrens_11/index.html"
 while True:
@@ -107,16 +105,18 @@ while True:
          category,
          review_rating,
          image_url]
-            ligne_data = []
-            ligne_data.append(ligne)
+            #ligne_data = []
+            #ligne_data.append(ligne)
             with open('test.csv', 'a', encoding = "utf-8") as csv_file:
                 writer = csv.writer(csv_file, delimiter=';', lineterminator='\n')
-                for i in ligne_data:
-                    writer.writerow(i)
+                #for i in ligne_data:
+                writer.writerow(ligne)
+
     # Trouver la page suivante à parcer dans la pagination.
     next_page_element = data.select_one('li.next > a')
     if next_page_element:
         next_page_url = next_page_element.get('href')
+        print("test",next_page_url)
         url2 = urljoin(url2, next_page_url)
     else:
         break
@@ -136,12 +136,12 @@ for lk in data1.find_all("ul", class_= "nav nav-list"):
         category_list.append(i["href"])
 
 
-while True:
+#while True:
     for url in category_list:
         category_url = urljoin(url_site, url) #ajout du Https:// pour un lien de site valide
         print("Catégorie", category_url)
 
-        req_data = requests.get(category_url) # url categorie récuperé
+        req_data = requests.get(category_url) # url catégorie récuperé
         my_data = BeautifulSoup(req_data.text, "html.parser")
 
         url_list = []
@@ -169,24 +169,24 @@ while True:
         # ---------------------------------------
             price_including_tax_Table = my_data2.find("table", {"class": "table table-striped"})
             price_including_tax_data = price_including_tax_Table.find_all("tr")
-            price_including_tax = []
+
             for td in price_including_tax_data[2].find("td"):
         # supprimer les lignes et les espaces en trop
-                price_including_tax.append(td.text.replace('\n', ' ').strip())
+                price_including_tax= td.text.replace('\n', ' ').strip()
                 print("3", price_including_tax)
         # --------------------------------
             price_excluding_tax_Table = my_data2.find("table", {"class": "table table-striped"})
             price_excluding_tax_data = price_excluding_tax_Table.find_all("tr")
-            price_excluding_tax = []
+
             for td in price_excluding_tax_data[3].find("td"):
-                price_excluding_tax.append(td.text.replace('\n', ' ').strip())
+                price_excluding_tax= td.text.replace('\n', ' ').strip()
                 print("4", price_excluding_tax)
         # ----------------------------------
             number_available_table = my_data2.find("table", {"class": "table table-striped"})
             number_available_data = number_available_table.find_all("tr")
-            number_available = []
+
             for td in number_available_data[5].find("td"):
-                number_available.append(td.text.replace('\n', ' ').strip())
+                number_available = td.text.replace('\n', ' ').strip()
                 print("5", number_available)
 
         # ----------------------------------
@@ -195,27 +195,46 @@ while True:
         # ----------------------------------
             category_table = my_data2.find("ul", {"class": "breadcrumb"})
             category_data = category_table.find_all("li")
-            category = []
-            for td in category_data[2].find("a"):
-                category.append(td.text.replace('\n', ' ').strip())
-                print("7", category)
-        # création de l'entete du fichier csv avec le nom de la catégorie en question
 
+            for td in category_data[2].find("a"):
+                category = td.text.replace('\n', ' ').strip()
+                print("7", category)
         # -----------------------------------
-            review_rating_table = my_data2.find("table", {"class": "table table-striped"})
-            review_rating_data = review_rating_table("tr")
-            review_rating = []
-            for td in review_rating_data[6].find("td"):
-                review_rating.append(td.text.replace('\n', ' ').strip())
-                print("7", review_rating)
+
+            review_rating_table = my_data2.find("article", {"product_page"})
+            for i in review_rating_table.find("div", {"class": "col-sm-6 product_main"}).find_all("p"):
+                #print("test", i)
+                review_rating_result = i.get('class')
+
+            if review_rating_result[1] == 'One':
+                review_rating = 1
+            elif review_rating_result[1] == 'Two':
+                review_rating = 2
+            elif review_rating_result[1] == 'Three':
+                review_rating = 3
+            elif review_rating_result[1] == 'Four':
+                review_rating = 4
+            elif review_rating_result[1] == 'Five':
+                review_rating = 5
+            else:
+                review_rating = 0
+
+            print("8", review_rating)
+            #review_rating_data = review_rating_table("tr")
+
+            #for td in review_rating_table[2].find("p"):
+            #    review_rating = td.text.replace('\n', ' ').strip()
+
         # ----------------------------------
             image = my_data2.find("div", {"class": "item active"})
             for i in image.find_all("img"):
                 url_brut = i.get('src')
                 image_url = urljoin(product_url, url_brut)
                 print("9", image_url)
-                image_name = i.get('alt')
+                image_name_all = i.get('alt')
+                image_name = image_name_all[1:10]
                 urllib.request.urlretrieve(image_url, str(image_name) + ".jpg") # Sauvegarde des images de chaque catégorie de livre
+
     # ----------------------------------
     # enregister l'ensemble dans un seul fichier CSV
 
@@ -251,16 +270,19 @@ while True:
                 ligne_data = []
                 ligne_data.append(ligne)
 
-                for i in ligne_data:
-                    writer.writerow(i)
+                #for i in ligne_data:
+                writer.writerow(ligne)
 
-
+"""
     # Trouver la page suivante à parcer dans la pagination.
     next_page_element = my_data2.select_one('li.next > a')
     if next_page_element:
         next_page_url = next_page_element.get('href')
+        print ("next_page_url", next_page_url)
         category_url = urljoin(category_url, next_page_url)
     else:
         break
 
+    print("fin")
+"""
 

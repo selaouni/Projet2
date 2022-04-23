@@ -82,6 +82,9 @@ for url in category_list:
 
             for td in number_available_data[5].find("td"):
                 number_available = td.text.replace('\n', ' ').strip()
+                spliter = number_available.split()
+                value_after_split = spliter[2]
+                number_available = value_after_split[1:2]
                 print("Disponibilité en stock: ", number_available)
 
         # ----------Description du produit------------------------

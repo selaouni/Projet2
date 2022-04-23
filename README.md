@@ -11,8 +11,17 @@ Scraping du site internet: https://books.toscrape.com/index.html
 Le script consulte le site, extrait toutes les catégories de livres disponibles, puis extrait les informations produit de tous les livres appartenant à toutes les différentes catégories, il permet ausso de télecharger er de sauvegarder le fichier image de chaque page Produit consulté.
 
 Getting Started
-  Dependencies:
-    - libraries:
+ 
+Pour commencer à travailler sur ce projet:
+
+    - créez et activez un environnement virtuel, puis installez les paquets necessaire à l'aide du fichier requirement.txt en utilisant la commande: 
+        pip install -r requirements.txt
+    - Créer le projet P2_Analyse du marché  dans un dossier 
+    - Clonner le repo distant dans votre repo local
+    - Executez le script: notez que l'execution de ce script genere 50 fichier csv et 1000 fichier images, le temps d'execution est donc un peu long.
+ 
+ 
+ libraries utilisé:
     import csv
     import requests
     from bs4 import BeautifulSoup
@@ -24,6 +33,7 @@ Getting Started
 
   Executing program$
   - ce projet a été developpé avec Pycharm
+  - -
 
   Help:
   Any advise for common problems or issues.

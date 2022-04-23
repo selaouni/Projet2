@@ -65,14 +65,16 @@ for url in category_list:
 
             for td in price_including_tax_data[2].find("td"):
                 # supprimer les lignes et les espaces en trop
-                price_including_tax= td.text.replace('\n', ' ').strip()
+                price_incl_tax = td.text.replace('\n', ' ').strip()
+                price_including_tax= price_incl_tax.replace('Â', '')
                 print("Prix taxe incluse: ", price_including_tax)
         # ---------Prix hors taxes-----------------------
             price_excluding_tax_Table = my_data2.find("table", {"class": "table table-striped"})
             price_excluding_tax_data = price_excluding_tax_Table.find_all("tr")
 
             for td in price_excluding_tax_data[3].find("td"):
-                price_excluding_tax= td.text.replace('\n', ' ').strip()
+                price_excl_tax= td.text.replace('\n', ' ').strip()
+                price_excluding_tax=price_excl_tax.replace('Â', '')
                 print("Prix hors taxes:", price_excluding_tax)
         # ---------Disponibilité en stock-------------------------
             number_available_table = my_data2.find("table", {"class": "table table-striped"})
@@ -130,7 +132,7 @@ for url in category_list:
                    "price_including_tax",
                    "price_excluding_tax",
                    "number_available",
-                   "Dproduct_description",
+                   "product_description",
                    "category",
                    "review_rating",
                    "image_url"]
@@ -138,7 +140,7 @@ for url in category_list:
             filename = str(category) + ".csv"
             file_exists = os.path.isfile(filename)
 
-            with open (filename, 'a', encoding = "utf-8") as fichier_csv:
+            with open (filename, 'a', encoding = "utf-8-sig") as fichier_csv:
                 writer = csv.writer(fichier_csv, delimiter=';', lineterminator='\n')
                 if not file_exists:
                     writer.writerow(en_tete)
@@ -156,7 +158,7 @@ for url in category_list:
 
                 writer.writerow(ligne)
 
-        # passer à la page suivante à parcer si vrai
+        # passer à la page suivante à parser si vrai
 
         next_page_element = my_data.select_one('li.next > a')
         if next_page_element:

@@ -57,7 +57,7 @@ Pour commencer à travailler sur ce projet:
 
  ## Historique des Versions:    
  *principales versions sous Github*
-  - Vérification globale et génération de la version finale du projet Sabah Yesterday 03:09  
+  - Vérification globale et génération de la version finale du projet Sabah 27/04/2022 19:59  
   - Sauvegarde des images et Ajout du code de la pagination Sabah 00h30 20/04/2022  
   - Ecriture les données dans un fichier CSV distinct pour chaque catégorie de livres Sabah 18/04/2022 18:17  
   - Extraction de toutes les catégories de livres avec les données de leurs produits (livres) Sabah 18/04/2022 16:48  

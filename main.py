@@ -13,8 +13,6 @@ import urllib.request #pour le téléchargement des images
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # disable warning
 
-
-
 url_site = "https://books.toscrape.com/index.html"
 get_url_page = requests.get(url_site,verify = False) # Attribution du lien du site avec requests
 page_content = get_url_page.content

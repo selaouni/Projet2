@@ -1,24 +1,25 @@
 #----------------------------------------------------------------------------------------------------------------
-#--------------------------Utilisez les bases de Python pour l'analyse de marché--------------------------------
+#-------------------------- Utilisez les bases de Python pour l'analyse de marché--------------------------------
 #----------------------------------------------------------------------------------------------------------------
 
 # import les packages
-import requests
 import csv
-import re
-import os.path # Ecriture dans les fichiers csv
-import urllib.request #Téléchargement des images
-
-from bs4 import BeautifulSoup # Parser la page web
-from urllib.parse import urljoin # Conversion en https://
-
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 from requests.packages.urllib3.exceptions import InsecureRequestWarning # disable warning
+import os.path # pour l'ecriture dans les fichiers csv
+import urllib.request #pour le téléchargement des images
+
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # disable warning
 
+
+
 url_site = "https://books.toscrape.com/index.html"
-get_url_page = requests.get(url_site) # récupérataion de la page à parser
+get_url_page = requests.get(url_site,verify = False) # Attribution du lien du site avec requests
 page_content = get_url_page.content
-data1 = BeautifulSoup(page_content ,'html.parser') # récupérataion du contenu de la page à parser
+data1 = BeautifulSoup(page_content ,'html.parser') # récupérataion du contenu de la page à scraper
+
 
 
 category_list = []
@@ -31,7 +32,7 @@ for url in category_list:
     category_url = urljoin(url_site, url) #ajout du https:// pour un lien de catégorie valide
     print("Catégorie url: ", category_url)
 
-    while True: # Boucle pour la pagination
+    while True: # ajout d'une boucle while pour la pagination
         req_data = requests.get(category_url)
         my_data = BeautifulSoup(req_data.text, "html.parser") # url catégorie récuperé pour parser
 
@@ -44,9 +45,9 @@ for url in category_list:
             product_url = urljoin(category_url,url2) #ajout du https:// pour un lien de livre valide
             print("Url Produit: ", product_url)
 
+
             req_data2 = requests.get(product_url)  # url produit récuperé comme instance
             my_data2 = BeautifulSoup(req_data2.text, "html.parser")
-        # récupération des données:
         # ----------url page-----------------------------
             url_page = product_url
             print("url page: ",url_page)
@@ -63,7 +64,8 @@ for url in category_list:
             price_including_tax_data = price_including_tax_Table.find_all("tr")
 
             for td in price_including_tax_data[2].find("td"):
-                price_incl_tax = td.text
+                # supprimer les lignes et les espaces en trop
+                price_incl_tax = td.text.replace('\n', ' ').strip()
                 price_including_tax= price_incl_tax.replace('Â', '')
                 print("Prix taxe incluse: ", price_including_tax)
         # ---------Prix hors taxes-----------------------
@@ -71,16 +73,15 @@ for url in category_list:
             price_excluding_tax_data = price_excluding_tax_Table.find_all("tr")
 
             for td in price_excluding_tax_data[3].find("td"):
-                price_excl_tax= td.text
-                price_excluding_tax = price_excl_tax.replace('Â', '')
+                price_excl_tax= td.text.replace('\n', ' ').strip()
+                price_excluding_tax=price_excl_tax.replace('Â', '')
                 print("Prix hors taxes:", price_excluding_tax)
         # ---------Disponibilité en stock-------------------------
             number_available_table = my_data2.find("table", {"class": "table table-striped"})
             number_available_data = number_available_table.find_all("tr")
 
             for td in number_available_data[5].find("td"):
-                number_available0 = td
-                number_available  = re.findall('\d+', number_available0)[0]
+                number_available = td.text.replace('\n', ' ').strip()
                 print("Disponibilité en stock: ", number_available)
 
         # ----------Description du produit------------------------
@@ -91,7 +92,7 @@ for url in category_list:
             category_data = category_table.find_all("li")
 
             for td in category_data[2].find("a"):
-                category = td.text
+                category = td.text.replace('\n', ' ').strip()
                 print("Catégorie: ", category)
         # -------Review rating----------------------------
 
@@ -166,4 +167,6 @@ for url in category_list:
             category_url = urljoin(category_url, next_page_url)
         else:
             break
+
+
 

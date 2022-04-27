@@ -3,23 +3,22 @@
 #----------------------------------------------------------------------------------------------------------------
 
 # import les packages
-import csv
 import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin #conversion en https://
-from requests.packages.urllib3.exceptions import InsecureRequestWarning # disable warning
-import os.path # pour l'ecriture dans les fichiers csv
-import urllib.request #pour le téléchargement des images
+import csv
 import re
+import os.path # Ecriture dans les fichiers csv
+import urllib.request #Téléchargement des images
 
+from bs4 import BeautifulSoup # Parser la page web
+from urllib.parse import urljoin # Conversion en https://
+
+from requests.packages.urllib3.exceptions import InsecureRequestWarning # disable warning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # disable warning
 
-
 url_site = "https://books.toscrape.com/index.html"
-get_url_page = requests.get(url_site,verify = False) # Attribution du lien du site avec requests
+get_url_page = requests.get(url_site) # récupérataion de la page à parser
 page_content = get_url_page.content
-data1 = BeautifulSoup(page_content ,'html.parser') # récupérataion du contenu de la page à scraper
-
+data1 = BeautifulSoup(page_content ,'html.parser') # récupérataion du contenu de la page à parser
 
 
 category_list = []
@@ -32,7 +31,7 @@ for url in category_list:
     category_url = urljoin(url_site, url) #ajout du https:// pour un lien de catégorie valide
     print("Catégorie url: ", category_url)
 
-    while True: # ajout d'une boucle while pour la pagination
+    while True: # Boucle pour la pagination
         req_data = requests.get(category_url)
         my_data = BeautifulSoup(req_data.text, "html.parser") # url catégorie récuperé pour parser
 
@@ -47,6 +46,7 @@ for url in category_list:
 
             req_data2 = requests.get(product_url)  # url produit récuperé comme instance
             my_data2 = BeautifulSoup(req_data2.text, "html.parser")
+        # récupération des données:
         # ----------url page-----------------------------
             url_page = product_url
             print("url page: ",url_page)
@@ -80,7 +80,7 @@ for url in category_list:
 
             for td in number_available_data[5].find("td"):
                 number_available0 = td
-                number_available  =  re.findall('\d+', number_available0)[0]
+                number_available  = re.findall('\d+', number_available0)[0]
                 print("Disponibilité en stock: ", number_available)
 
         # ----------Description du produit------------------------
@@ -166,6 +166,4 @@ for url in category_list:
             category_url = urljoin(category_url, next_page_url)
         else:
             break
-
-
 

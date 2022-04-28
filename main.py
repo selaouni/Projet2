@@ -14,7 +14,6 @@ import re
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # disable warning
 
-
 url_site = "https://books.toscrape.com/index.html"
 get_url_page = requests.get(url_site) # Attribution du lien du site avec requests
 page_content = get_url_page.content

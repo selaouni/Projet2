@@ -1,22 +1,22 @@
 #----------------------------------------------------------------------------------------------------------------
-#-------------------------- Utilisez les bases de Python pour l'analyse de marché--------------------------------
+#--------------------------Utilisez les bases de Python pour l'analyse de marché--------------------------------
 #----------------------------------------------------------------------------------------------------------------
 
 # import les packages
 import csv
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
+from urllib.parse import urljoin #conversion en https://
 from requests.packages.urllib3.exceptions import InsecureRequestWarning # disable warning
 import os.path # pour l'ecriture dans les fichiers csv
 import urllib.request #pour le téléchargement des images
+import re
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning) # disable warning
 
 
-
 url_site = "https://books.toscrape.com/index.html"
-get_url_page = requests.get(url_site,verify = False) # Attribution du lien du site avec requests
+get_url_page = requests.get(url_site) # Attribution du lien du site avec requests
 page_content = get_url_page.content
 data1 = BeautifulSoup(page_content ,'html.parser') # récupérataion du contenu de la page à scraper
 
@@ -45,7 +45,6 @@ for url in category_list:
             product_url = urljoin(category_url,url2) #ajout du https:// pour un lien de livre valide
             print("Url Produit: ", product_url)
 
-
             req_data2 = requests.get(product_url)  # url produit récuperé comme instance
             my_data2 = BeautifulSoup(req_data2.text, "html.parser")
         # ----------url page-----------------------------
@@ -64,8 +63,7 @@ for url in category_list:
             price_including_tax_data = price_including_tax_Table.find_all("tr")
 
             for td in price_including_tax_data[2].find("td"):
-                # supprimer les lignes et les espaces en trop
-                price_incl_tax = td.text.replace('\n', ' ').strip()
+                price_incl_tax = td.text
                 price_including_tax= price_incl_tax.replace('Â', '')
                 print("Prix taxe incluse: ", price_including_tax)
         # ---------Prix hors taxes-----------------------
@@ -73,15 +71,16 @@ for url in category_list:
             price_excluding_tax_data = price_excluding_tax_Table.find_all("tr")
 
             for td in price_excluding_tax_data[3].find("td"):
-                price_excl_tax= td.text.replace('\n', ' ').strip()
-                price_excluding_tax=price_excl_tax.replace('Â', '')
+                price_excl_tax= td.text
+                price_excluding_tax = price_excl_tax.replace('Â', '')
                 print("Prix hors taxes:", price_excluding_tax)
         # ---------Disponibilité en stock-------------------------
             number_available_table = my_data2.find("table", {"class": "table table-striped"})
             number_available_data = number_available_table.find_all("tr")
 
             for td in number_available_data[5].find("td"):
-                number_available = td.text.replace('\n', ' ').strip()
+                number_available0 = td
+                number_available  =  re.findall('\d+', number_available0)[0]
                 print("Disponibilité en stock: ", number_available)
 
         # ----------Description du produit------------------------
@@ -92,7 +91,7 @@ for url in category_list:
             category_data = category_table.find_all("li")
 
             for td in category_data[2].find("a"):
-                category = td.text.replace('\n', ' ').strip()
+                category = td.text
                 print("Catégorie: ", category)
         # -------Review rating----------------------------
 
